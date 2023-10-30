@@ -7,7 +7,7 @@ measures = ('novelty', 'feasibility', 'value')
 
 
 def get_annotated():
-    _, _, source = populate.read('EEGv2.xlsx')
+    _, _, source = populate.read()
     source.rename(columns={'Question_ja': 'Question'}, inplace=True)
     source.drop_duplicates(['Question', 'Answer'], inplace=True)
 
