@@ -1,4 +1,4 @@
-import rate
+import rate as rate_m
 import common
 
 from n_1rxi_numeric import process
@@ -32,7 +32,7 @@ list_item = '{i}. {Answer}'
 
 async def rate(data, chunk_size=20, measures=['novelty', 'feasibility', 'value'], num_procs=10):
     requests = get_requests(data, chunk_size, measures)
-    await rate.entrypoint(requests, num_procs=num_procs, n=1, model='gpt-4', temperature=0)
+    await rate_m.entrypoint(requests, num_procs=num_procs, n=1, model='gpt-4', temperature=0)
 
 
 def get_requests(data, chunk_size, measures):

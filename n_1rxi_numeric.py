@@ -1,4 +1,4 @@
-import rate
+import rate as rate_m
 import common
 
 prompts = [{'role': 'user', 'content': (
@@ -25,7 +25,7 @@ list_item = '{i}. {Answer}'
 
 async def rate(data, chunk_size=20, measures=['novelty', 'feasibility', 'value']):
     requests = get_requests(data, chunk_size, measures)
-    await rate.entrypoint(requests, n=1, model='gpt-4', temperature=0)
+    await rate_m.entrypoint(requests, n=1, model='gpt-4', temperature=0)
 
 
 def get_requests(data, chunk_size, measures):

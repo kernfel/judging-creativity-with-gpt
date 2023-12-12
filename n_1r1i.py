@@ -1,5 +1,5 @@
 import json
-import rate
+import rate as rate_m
 import common
 
 json_suffix = {'novelty': '', 'feasibility': '', 'value': ', where x is an integer representing the value in JPY'}
@@ -26,7 +26,7 @@ prompts = [{'role': 'user', 'content': (
 
 async def rate(data):
     requests = get_requests(data)
-    await rate.entrypoint(requests, n=1, model='gpt-4', temperature=0)
+    await rate_m.entrypoint(requests, n=1, model='gpt-4', temperature=0)
 
 
 def get_requests(data):
