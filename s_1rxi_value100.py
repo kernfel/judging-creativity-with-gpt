@@ -77,7 +77,7 @@ async def rate(data):
                 requests.append({'messages': prompt, 'ichunk': ichunk, 'process': process, 'data': data, 'measure': measure, 'indices': chunk,
                                 'n_chunks': len(chunks), 'duplicate_rows': duplicate_rows, 'chunk_size': qid_chunk_size})
 
-    await rate_m.entrypoint(requests, n=1, model='gpt-4', temperature=0)
+    await rate_m.entrypoint(requests, n=1, model='gpt-4-1106-preview', temperature=0)
 
 
 def get_samples_string(measure, qid):
