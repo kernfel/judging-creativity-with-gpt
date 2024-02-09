@@ -26,7 +26,7 @@ prompts = [{'role': 'user', 'content': (
 
 async def rate(data):
     requests = get_requests(data)
-    await rate_m.entrypoint(requests, n=1, model='gpt-4-1106-preview', temperature=0)
+    await rate_m.entrypoint(requests, n=1, model=rate_m.model, temperature=0)
 
 
 def get_requests(data):

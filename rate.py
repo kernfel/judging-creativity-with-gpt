@@ -3,6 +3,9 @@ import openai
 import asyncio
 
 
+model = 'gpt-4-turbo-preview'
+
+
 def setkey(n : int):
     keys = ['List', 'your', 'API', 'keys']
     openai.api_key = keys[n]
