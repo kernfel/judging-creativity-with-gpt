@@ -32,7 +32,7 @@ list_item = '{i}. {Answer}'
 
 async def rate(data, chunk_size=20, measures=['novelty', 'feasibility', 'value']):
     requests = get_requests(data, chunk_size, measures)
-    await rate_m.entrypoint(requests, n=1, model='gpt-4-turbo-preview', temperature=0)
+    await rate_m.entrypoint(requests, n=1, model=rate_m.model, temperature=0)
 
 
 def get_requests(data, chunk_size, measures):
