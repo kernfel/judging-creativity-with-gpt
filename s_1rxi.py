@@ -39,7 +39,7 @@ training_list_item = 'Example {i}: {Answer} -- {value}'
 
 async def rate(data, chunk_size=20):
     requests = get_requests(data, chunk_size)
-    await rate_m.entrypoint(requests, n=1, model='gpt-4', temperature=0)
+    await rate_m.entrypoint(requests, n=1, model='gpt-4-turbo-preview', temperature=0)
 
 
 def get_requests(data, chunk_size):
