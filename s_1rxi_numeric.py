@@ -32,7 +32,8 @@ list_item = '{i}. {Answer}'
 
 async def rate(data, chunk_size=20, measures=['novelty', 'feasibility', 'value'], num_procs=10):
     requests = get_requests(data, chunk_size, measures)
-    return rate_m.entrypoint(requests, temperature=0)
+    await rate_m.entrypoint(requests, temperature=0)
+    return requests
 
 
 def get_requests(data, chunk_size, measures):

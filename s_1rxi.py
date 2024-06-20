@@ -39,7 +39,8 @@ training_list_item = 'Example {i}: {Answer} -- {value}'
 
 async def rate(data, chunk_size=20):
     requests = get_requests(data, chunk_size)
-    return rate_m.entrypoint(requests, temperature=0)
+    await rate_m.entrypoint(requests, temperature=0)
+    return requests
 
 
 def get_requests(data, chunk_size):

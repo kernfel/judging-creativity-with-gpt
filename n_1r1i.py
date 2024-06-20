@@ -26,7 +26,8 @@ prompts = [{'role': 'user', 'content': (
 
 async def rate(data):
     requests = get_requests(data)
-    return rate_m.entrypoint(requests, temperature=0)
+    await rate_m.entrypoint(requests, temperature=0)
+    return requests
 
 
 def get_requests(data):
