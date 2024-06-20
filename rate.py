@@ -2,13 +2,14 @@ import time
 import openai
 import asyncio
 
+import apikeys  # Never commit this module, which should contain: keys={'gpt': ['keys', 'here'], 'claude': ['more', 'keys']}
+
 
 model = 'gpt-4-turbo-preview'
 
 
 def setkey(n : int):
-    keys = ['List', 'your', 'API', 'keys']
-    openai.api_key = keys[n]
+    openai.api_key = apikeys.keys[n]
 
 
 async def entrypoint(requests, num_procs=10, **kwargs):
