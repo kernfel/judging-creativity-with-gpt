@@ -33,6 +33,8 @@ def setkey(n : int, library='gpt'):
 
 
 async def entrypoint(requests, num_procs=10, **kwargs):
+    if _library == 'claude':
+        num_procs = max(num_procs, 5)
     sem = asyncio.Semaphore(num_procs)
     try:
         total = len(requests)
