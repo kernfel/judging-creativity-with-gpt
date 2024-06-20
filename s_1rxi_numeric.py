@@ -32,7 +32,7 @@ list_item = '{i}. {Answer}'
 
 async def rate(data, chunk_size=20, measures=['novelty', 'feasibility', 'value'], num_procs=10):
     requests = get_requests(data, chunk_size, measures)
-    await rate_m.entrypoint(requests, num_procs=num_procs, n=1, model=rate_m.model, temperature=0)
+    return rate_m.entrypoint(requests, temperature=0)
 
 
 def get_requests(data, chunk_size, measures):
@@ -64,6 +64,6 @@ def get_requests(data, chunk_size, measures):
                     prompt.append({'role': p['role'], 'content': p['content'].format(
                         measure=measure, Measure=measure.capitalize(), definition=common.definitions[measure], chunk_size=qid_chunk_size,
                         qalist='\n'.join(qalist), Question=data.loc[chunk[0], 'Question'], samples=samples[measure])})
-                requests.append({'messages': prompt, 'ichunk': ichunk, 'process': process, 'data': data, 'measure': measure, 'indices': chunk,
+                requests.append({'messages': prompt, 'ichunk': ichunk, 'data': data, 'measure': measure, 'indices': chunk,
                                 'n_chunks': len(chunks), 'duplicate_rows': duplicate_rows, 'chunk_size': qid_chunk_size})
     return requests

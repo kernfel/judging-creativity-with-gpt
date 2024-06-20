@@ -26,7 +26,7 @@ prompts = [{'role': 'user', 'content': (
 
 async def rate(data):
     requests = get_requests(data)
-    await rate_m.entrypoint(requests, n=1, model=rate_m.model, temperature=0)
+    return rate_m.entrypoint(requests, temperature=0)
 
 
 def get_requests(data):
@@ -38,23 +38,18 @@ def get_requests(data):
                 prompt.append({'role': p['role'], 'content': p['content'].format(
                     **row, measure=measure, Measure=measure.capitalize(), definition=definition,
                     elaboration=common.elaborations[measure], json_suffix=json_suffix[measure])})
-            requests.append({'messages': prompt, 'index': index, 'process': process, 'data': data, 'measure': measure})
+            requests.append({'messages': prompt, 'index': index, 'data': data, 'measure': measure})
     return requests
 
 
-def process(request, completion, **kwargs):
-    response = completion.choices[0].message.content
-    try:
-        parsed = parse(response, request["measure"])
-    except RuntimeError as e:
-        print(f'Failed parse (row {request["index"]}). Prompt:\n\'\'\'{request["messages"][0]["content"]}\'\'\'\nResponse:\n\'\'\'{response}\'\'\'\nError: {e}')
-        if kwargs['temperature'] < 0.5:
-            return {**kwargs, 'temperature': kwargs['temperature']+.1}
-        else:
-            print(f'Giving up.')
-            parsed = {f'{request["measure"]}_raw': response}
-    
-    request['data'].loc[request['index'], parsed.keys()] = parsed
+def process(requests):
+    for i, request in enumerate(requests):
+        response = request['completion'].choices[0].message.content
+        try:
+            parsed = parse(response, request["measure"])
+            request['data'].loc[request['index'], parsed.keys()] = parsed
+        except RuntimeError as e:
+            print(f'Failed parse (row {request["index"]}, request #{i}). Prompt:\n\'\'\'{request["messages"][0]["content"]}\'\'\'\nResponse:\n\'\'\'{response}\'\'\'\nError: {e}')
 
 
 def parse(response, measure):

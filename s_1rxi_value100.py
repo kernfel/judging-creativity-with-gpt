@@ -74,10 +74,10 @@ async def rate(data):
                         measure=measure, Measure=measure.capitalize(), definition=definition, chunk_size=qid_chunk_size,
                         elaboration=common.elaborations_list[measure], json_suffix=json_suffix[measure],
                         qalist='\n'.join(qalist), Question=data.loc[chunk[0], 'Question'], samples=samples[measure])})
-                requests.append({'messages': prompt, 'ichunk': ichunk, 'process': process, 'data': data, 'measure': measure, 'indices': chunk,
+                requests.append({'messages': prompt, 'ichunk': ichunk, 'data': data, 'measure': measure, 'indices': chunk,
                                 'n_chunks': len(chunks), 'duplicate_rows': duplicate_rows, 'chunk_size': qid_chunk_size})
 
-    await rate_m.entrypoint(requests, n=1, model=rate_m.model, temperature=0)
+    return rate_m.entrypoint(requests, temperature=0)
 
 
 def get_samples_string(measure, qid):

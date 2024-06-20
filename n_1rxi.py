@@ -32,7 +32,7 @@ list_item = '{i}. {Answer}'
 
 async def rate(data, chunk_size=20, measures=['novelty', 'feasibility', 'value']):
     requests = get_requests(data, chunk_size, measures)
-    await rate_m.entrypoint(requests, n=1, model=rate_m.model, temperature=0)
+    return rate_m.entrypoint(requests, temperature=0)
 
 
 def get_requests(data, chunk_size, measures):
@@ -63,26 +63,21 @@ def get_requests(data, chunk_size, measures):
                         measure=measure, Measure=measure.capitalize(), definition=common.definitions[measure],
                         elaboration=common.elaborations_list[measure], json_suffix=json_suffix[measure],
                         qalist='\n'.join(qalist), Question=data.loc[chunk[0], 'Question'], chunk_size=qid_chunk_size)})
-                requests.append({'messages': prompt, 'ichunk': ichunk, 'process': process, 'data': data, 'measure': measure, 'indices': chunk,
+                requests.append({'messages': prompt, 'ichunk': ichunk, 'data': data, 'measure': measure, 'indices': chunk,
                                 'n_chunks': len(chunks), 'duplicate_rows': duplicate_rows, 'chunk_size': qid_chunk_size})
     return requests
 
 
-def process(request, completion, **kwargs):
-    response = completion.choices[0].message.content
-    try:
-        parsed = parse(response, request)
-    except RuntimeError as e:
-        print(f'Failed parse (chunk {request["ichunk"]}). Prompt:\n\'\'\'{request["messages"][0]["content"]}\'\'\'\nResponse:\n\'\'\'{response}\'\'\'\nError: {e}')
-        if kwargs['temperature'] < 0.5:
-            return {**kwargs, 'temperature': kwargs['temperature']+.1}
-        else:
-            print(f'Giving up.')
-            parsed = {f'{request["measure"]}_raw': response}
-    
-    for i, (item, idx) in enumerate(zip(parsed, request['indices'])):
-        if request['ichunk'] < request['n_chunks']-1 or i >= request['duplicate_rows']:
-            request['data'].loc[idx, item.keys()] = item
+def process(requests):
+    for rqi, request in enumerate(requests):
+        response = request['completion'].choices[0].message.content
+        try:
+            parsed = parse(response, request)
+            for i, (item, idx) in enumerate(zip(parsed, request['indices'])):
+                if request['ichunk'] < request['n_chunks']-1 or i >= request['duplicate_rows']:
+                    request['data'].loc[idx, item.keys()] = item
+        except RuntimeError as e:
+            print(f'Failed parse (chunk {request["ichunk"]}, request #{rqi}). Prompt:\n\'\'\'{request["messages"][0]["content"]}\'\'\'\nResponse:\n\'\'\'{response}\'\'\'\nError: {e}')
 
 
 def parse(response, request):
