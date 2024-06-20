@@ -38,6 +38,8 @@ async def entrypoint(requests, num_procs=10, **kwargs):
         total = len(requests)
     except TypeError:
         total = 'unknown'
+    if 'model' not in kwargs:
+        kwargs['model'] = model
     await asyncio.gather(*(request(sem, i, total, rq, **kwargs) for i, rq in enumerate(requests)))
 
 
