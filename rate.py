@@ -21,7 +21,7 @@ _models={
 
 def setkey(n : int, library='gpt'):
     key = apikeys.keys[library][n]
-    
+
     global model, _claudeobj, _library
     _library = library
     model = _models[library]
@@ -46,9 +46,14 @@ async def request(sem, i, total, rq, **kwargs):
         print(f'Request {i+1} of {total}')
         while kwargs:
             completion = await acomplete(messages=rq['messages'], **kwargs)
-            kwargs = rq['process'](rq, completion, **kwargs)
-            if kwargs:
-                print(f'Retrying request {i+1} with params {kwargs}')
+            if 'process' in rq:
+                kwargs = rq['process'](rq, completion, **kwargs)
+                if kwargs:
+                    print(f'Retrying request {i+1} with params {kwargs}')
+            else:
+                rq['completion'] = completion
+                rq['kwargs'] = kwargs
+                break
 
 
 async def acomplete(**kwargs):
