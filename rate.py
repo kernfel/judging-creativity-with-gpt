@@ -94,7 +94,7 @@ async def acomplete(**kwargs):
                 # Patch into OpenAI format
                 response.choices = [types.SimpleNamespace(index=0, message=types.SimpleNamespace(role=response.role, content=response.content[0].text))]
                 return response
-            except anthropic.RateLimitError as e:
+            except (anthropic.RateLimitError, anthropic.InternalServerError) as e:
                 print(e)
                 print(f'Retrying in {backoff} s...')
                 time.sleep(backoff)
