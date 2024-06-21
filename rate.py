@@ -88,7 +88,6 @@ async def acomplete(**kwargs):
             warnings.warn('Claude API does not support "n" parameter, ignoring (n=1).')
         if 'max_tokens' not in kwargs:
             kwargs['max_tokens'] = 4096
-        print(kwargs)
         while True:
             try:
                 response = await _claudeobj.messages.create(**kwargs)
