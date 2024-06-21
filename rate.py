@@ -15,7 +15,7 @@ _library = None
 _claudeobj = None
 _models={
     'gpt': 'gpt-4-turbo-preview',
-    'claude': 'claude-3-sonnet-20240229'
+    'claude': 'claude-3-5-sonnet-20240620'
 }
 
 
@@ -34,7 +34,7 @@ def setkey(n : int, library='gpt'):
 
 async def entrypoint(requests, num_procs=10, **kwargs):
     if _library == 'claude':
-        num_procs = min(num_procs, 5)
+        num_procs = min(num_procs, 2)
     sem = asyncio.Semaphore(num_procs)
     try:
         total = len(requests)
