@@ -1,3 +1,4 @@
+import re
 import json
 import rate as rate_m
 import common
@@ -91,7 +92,7 @@ def parse(response, request):
     splitlines = (response + '\n ').splitlines()
     for j, l in enumerate(splitlines):
         if l.strip():
-            lines.append(l.strip())
+            lines.append(l.strip().lstrip('- '))
             continue
         elif lines and len(lines) == 4:
             # Assume, based on examples, that l0 is a copy of the use, l1 translation, l2 explanation, l3 rating.
@@ -121,6 +122,10 @@ def _parse(lines, measure):
     for key, line in zip(keys, lines):
         result[f'{key}_explanation'] = line
     
+    # Remove thousands separator (seen in GPT-4o: {"value": 1,000})
+    if ',' in lines[-1]:
+        lines[-1] = lines[-1].replace(',', '')
+
     try:
         ratings = json.loads(lines[-1])
         if len(ratings) != 1 or measure not in ratings:

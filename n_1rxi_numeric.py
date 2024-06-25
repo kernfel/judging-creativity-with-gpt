@@ -80,7 +80,7 @@ def process(requests):
 def parse(response, request):
     results = []
     i = 1
-    pattern = re.compile(r'(\d+)\.\s*(\d+)')
+    pattern = re.compile(r'(\d+)\.\D*(\d+)')
     for line in (response).splitlines():
         line = line.strip()
         match = pattern.match(line)
