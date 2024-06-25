@@ -85,11 +85,16 @@ def parse(response, request):
         line = line.strip()
         match = pattern.match(line)
         if match is None:
-            continue
+            try:
+                rating = int(line)
+            except ValueError:
+                continue
         elif int(match[1]) != i:
             raise RuntimeError(f'Expected line number {i}, got {match[1]}.')
+        else:
+            rating = int(match[2])
         i = i+1
-        results.append({request['measure']: int(match[2])})
+        results.append({request['measure']: rating})
     
     
     if len(results) != request["chunk_size"]:
