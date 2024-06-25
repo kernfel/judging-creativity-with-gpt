@@ -46,6 +46,7 @@ def get_requests(data):
 
 
 def process(requests):
+    failures = []
     for rqi, request in enumerate(requests):
         response = request['completion'].choices[0].message.content
         try:
@@ -53,6 +54,8 @@ def process(requests):
             request['data'].loc[request['index'], parsed.keys()] = parsed
         except RuntimeError as e:
             print(f'Failed parse (row {request["index"]}, request #{rqi}). Prompt:\n\'\'\'{request["messages"][0]["content"]}\'\'\'\nResponse:\n\'\'\'{response}\'\'\'\nError: {e}')
+            failures.append(request)
+    return failures
 
 
 def parse(response):

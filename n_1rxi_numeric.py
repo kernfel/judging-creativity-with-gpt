@@ -62,6 +62,7 @@ def get_requests(data, chunk_size, measures):
 
 
 def process(requests):
+    failures = []
     for rqi, request in enumerate(requests):
         response = request['completion'].choices[0].message.content
         try:
@@ -71,6 +72,8 @@ def process(requests):
                     request['data'].loc[idx, item.keys()] = item
         except RuntimeError as e:
             print(f'Failed parse (chunk {request["ichunk"]}, request #{rqi}). Prompt:\n\'\'\'{request["messages"][0]["content"]}\'\'\'\nResponse:\n\'\'\'{response}\'\'\'\nError: {e}')
+            failures.append(request)
+    return failures
 
 
 def parse(response, request):
