@@ -88,7 +88,8 @@ def parse(response, request):
     lines = []
     results = []
     i = 0
-    for l in (response + '\n ').splitlines():
+    splitlines = (response + '\n ').splitlines()
+    for j, l in enumerate(splitlines):
         if l.strip():
             lines.append(l.strip())
             continue
@@ -96,8 +97,12 @@ def parse(response, request):
             # Assume, based on examples, that l0 is a copy of the use, l1 translation, l2 explanation, l3 rating.
             lines = ['\n'.join(lines[:2]), lines[2], lines[3]]
         elif lines and len(lines) != 3:
-            raise RuntimeError(f'Unexpected number of lines for item {i}.')
-        
+            try:
+                json.loads(splitlines[j+1].strip())[request['measure']]
+                continue
+            except (json.JSONDecodeError, KeyError):
+                raise RuntimeError(f'Unexpected number of lines for item {i}.')
+
         if lines:
             results.append(_parse(lines, request['measure']))
             lines = []

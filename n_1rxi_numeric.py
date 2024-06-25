@@ -1,3 +1,4 @@
+import re
 import rate as rate_m
 import common
 
@@ -79,20 +80,16 @@ def process(requests):
 def parse(response, request):
     results = []
     i = 1
+    pattern = re.compile(r'(\d+)\.\s*(\d+)')
     for line in (response).splitlines():
         line = line.strip()
-        if '.' not in line:
-            raise RuntimeError(f'Expected period in line, found {line}.')
-        if line.endswith('円') or line.endswith('¥'):
-            line = line[:-1]
-        elif line.endswith('JPY'):
-            line = line[:-3]
-        
-        j, val = map(int, line.split('.'))
-        if j != i:
-            raise RuntimeError(f'Expected line number {i}, got {j}.')
+        match = pattern.match(line)
+        if match is None:
+            continue
+        elif int(match[1]) != i:
+            raise RuntimeError(f'Expected line number {i}, got {match[1]}.')
         i = i+1
-        results.append({request['measure']: val})
+        results.append({request['measure']: int(match[2])})
     
     
     if len(results) != request["chunk_size"]:
